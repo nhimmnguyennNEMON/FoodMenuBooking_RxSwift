@@ -25,17 +25,17 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     //data use SectionModel
     let tableViewItemSection = BehaviorRelay.init(value: [
         SectionModel(header: "Drink", items: [
-            Food.init(name: "Humbergar", image: "humbergar", price: "10"),
-            Food.init(name: "Pizza", image: "pizza", price: "20"),
-            Food.init(name: "Eating", image: "eating", price: "30"),
-            Food.init(name: "Ice Cream", image: "ice", price: "40"),
-            Food.init(name: "Fluit", image: "fluit", price: "50")
+            Food.init(name: "Humbergar", image: "humbergar", price: 10),
+            Food.init(name: "Pizza", image: "pizza", price: 20),
+            Food.init(name: "Eating", image: "eating", price: 30),
+            Food.init(name: "Ice Cream", image: "ice", price: 40),
+            Food.init(name: "Fluit", image: "fluit", price: 50)
         ]),
         SectionModel(header: "Food", items: [
-            Food.init(name: "Cafe", image: "cafe", price: "12"),
-            Food.init(name: "Cake", image: "cake",price: "12"),
-            Food.init(name: "Beer", image: "beer", price: "12"),
-            Food.init(name: "CocaCola", image: "coca", price: "12")
+            Food.init(name: "Cafe", image: "cafe", price: 12),
+            Food.init(name: "Cake", image: "cake",price: 12),
+            Food.init(name: "Beer", image: "beer", price: 12),
+            Food.init(name: "CocaCola", image: "coca", price: 12)
         ])
     ])
     
@@ -47,8 +47,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         ds, tv, ip, item in
         let cell: FoodTableViewCell = tv.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: ip) as! FoodTableViewCell
         cell.foodname.text = item.name
-        cell.imageName.image = UIImage.init(named: item.image)
-        cell.price.text = item.price + "$"
+        cell.imageName.image = UIImage.init(named: item.image ?? "")
+        cell.price.text = String(describing: item.price ?? 0) + "$"
         
         return cell
     },
@@ -67,7 +67,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             .map ({ query in
                 self.tableViewItemSection.value.map ({ sectionModel in
                     SectionModel(header: sectionModel.header , items: sectionModel.items.filter ({ food in
-                        query.isEmpty || food.name.lowercased().contains(query.lowercased())
+                        query.isEmpty || ((food.name?.lowercased().contains(query.lowercased())) != nil)
                     }))
                 })
             })
@@ -85,8 +85,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             .rx.modelSelected(Food.self)
             .subscribe(onNext: { [weak self] foodObject in
                 let foodVC = self?.storyboard?.instantiateViewController(identifier: "FoodVC") as! FoodTableViewDetailController
-                foodVC.imageNameFood.accept(foodObject.image)
-                foodVC.nameFood.accept(foodObject.name)
+                foodVC.imageNameFood.accept(foodObject.image ?? "")
+                foodVC.nameFood.accept(foodObject.name ?? "")
                 self?.navigationController?.pushViewController(foodVC, animated: true)
             }).disposed(by: bag)
     }

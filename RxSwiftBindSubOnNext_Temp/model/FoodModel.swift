@@ -8,13 +8,7 @@
 import Foundation
 
 struct Food {
-    var name: String
-    var image: String
-    var price: String
-    
-    init(name: String, image: String, price: String) {
-        self.name = name
-        self.image = image
-        self.price = price
-    }
+    var name: String?
+    var image: String?
+    var price: Int?
 }
